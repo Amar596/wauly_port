@@ -68,20 +68,39 @@ class MainActivity : FlutterActivity() {
                             appSettings.setBackLight(value)
                         }
 
-
                         "startScreenCap" -> {
-                        val fileName = call.argument<String>("fileName") ?: ""
-                        val file = java.io.File(fileName)
+                            val fileName = call.argument<String>("fileName") ?: ""
+                            val file = java.io.File(fileName)
 
-                        file.parentFile?.mkdirs()
-
-                        Thread {
-                            val resultCode = appSystem.startScreenCap(fileName)
-                            runOnUiThread {
-                                result.success(resultCode)
+                            if (file.parentFile?.exists() == false) {
+                                file.parentFile?.mkdirs()
                             }
-                        }.start()
+
+                            Log.d("FlutterApp", "Screen Capture begins")
+                            val resultCode = appSystem.startScreenCap(fileName)
+                            Log.d("FlutterApp", "Screen capture resultCode: $resultCode")
+
+                            // Log.d("FlutterApp", "Attempting screen capture to: $fileName")
+
+                            // Thread {
+                            //     try {
+                            //         Log.d("FlutterApp", "Screen Capture begins")
+                            //         val resultCode = appSystem.startScreenCap(fileName)
+                            //         Log.d("FlutterApp", "Screen capture resultCode: $resultCode")
+
+                            //         runOnUiThread {
+                            //             result.success(resultCode)
+                            //         }
+                            //     } catch (e: Exception) {
+                            //         Log.e("FlutterApp", "Exception in screen cap: ${e.message}", e)
+                            //         runOnUiThread {
+                            //             result.error("SCREEN_CAP_ERROR", "Exception: ${e.message}", null)
+                            //         }
+                            //     }
+                            // }.start()
                         }
+
+
 
                         else -> result.notImplemented()
                     }
