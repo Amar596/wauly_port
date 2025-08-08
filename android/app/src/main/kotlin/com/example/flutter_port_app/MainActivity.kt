@@ -8,19 +8,20 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import com.mk.service.ifpd.midware.manager.app.imp.AppSystem
 import com.mk.service.ifpd.midware.manager.app.imp.AppSettings
+import com.mk.service.ifpd.app.midware.DisplayOrientation
+
 
 class MainActivity : FlutterActivity() {
 
     private val CHANNEL = "port_control"
     private lateinit var appSystem: AppSystem
     private lateinit var appSettings: AppSettings
-
+    
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
         appSystem = AppSystem.getInstance(applicationContext)
-        appSettings = AppSettings.getInstance(applicationContext)
-
+        appSettings = AppSettings.getInstance(applicationContext)   
         appSystem.connectService()
         appSettings.connectService()
 
@@ -75,32 +76,49 @@ class MainActivity : FlutterActivity() {
                             if (file.parentFile?.exists() == false) {
                                 file.parentFile?.mkdirs()
                             }
-
-                            Log.d("FlutterApp", "Screen Capture begins")
                             val resultCode = appSystem.startScreenCap(fileName)
-                            Log.d("FlutterApp", "Screen capture resultCode: $resultCode")
-
-                            // Log.d("FlutterApp", "Attempting screen capture to: $fileName")
-
-                            // Thread {
-                            //     try {
-                            //         Log.d("FlutterApp", "Screen Capture begins")
-                            //         val resultCode = appSystem.startScreenCap(fileName)
-                            //         Log.d("FlutterApp", "Screen capture resultCode: $resultCode")
-
-                            //         runOnUiThread {
-                            //             result.success(resultCode)
-                            //         }
-                            //     } catch (e: Exception) {
-                            //         Log.e("FlutterApp", "Exception in screen cap: ${e.message}", e)
-                            //         runOnUiThread {
-                            //             result.error("SCREEN_CAP_ERROR", "Exception: ${e.message}", null)
-                            //         }
-                            //     }
-                            // }.start()
                         }
 
+                        "setDisplayOrientation" -> {
+                            val angle = call.argument<Int>("angle") ?: 0
+                            val orientation = when (angle) {
+                                0 -> DisplayOrientation.ROTATION_0
+                                90 -> DisplayOrientation.ROTATION_90
+                                180 -> DisplayOrientation.ROTATION_180
+                                270 -> DisplayOrientation.ROTATION_270
+                                else -> DisplayOrientation.ROTATION_0 
+                            }
+                            appSystem.setDisplayOrientation(orientation)
+                        }
+                        // "setDisplayOrientation" -> {
+                        //     val angle = call.argument<Int>("angle") ?: 0
+                        //     appSystem.setDisplayOrientation(DisplayOrientation.ROTATION_180)
+                        // }
 
+                        "getSystemVoice" -> {
+                                val volume = appSystem.getSystemVoice()
+                                result.success(volume)
+                            }
+                            
+                                "setSystemVoice" -> {
+                                    val voice = call.argument<Int>("voice") ?: 50
+                                    if (voice in 0..100) {
+                                        appSystem.setSystemVoice(voice)
+                                        result.success("Volume set to $voice")
+                                    } else {
+                                        result.error("INVALID_VOLUME", "Volume must be 0-100", null)
+                                    }
+                                }
+                                
+                                "mute" -> {
+                                    appSystem.mute()
+                                    result.success("Device muted")
+                                }
+                                
+                                "unMute" -> {
+                                    appSystem.unMute()
+                                    result.success("Device unmuted")
+                                }
 
                         else -> result.notImplemented()
                     }

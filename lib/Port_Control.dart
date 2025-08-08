@@ -43,4 +43,27 @@ class PortControl {
     });
     return result;
   }
+
+  // static Future<void> setDisplayOrientation(int angle, int i, int i, int i) async =>
+  //     _channel.invokeMethod('setDisplayOrientation', {'angle': angle});
+
+  static Future<void> setDisplayOrientation(int angle) async {
+    await _channel.invokeMethod('setDisplayOrientation', {'angle': angle});
+  }
+
+      static Future<int?> getSystemVoice() async {
+    return await _channel.invokeMethod<int>('getSystemVoice');
+  }
+
+  static Future<void> setSystemVoice(int voice) async {
+    await _channel.invokeMethod('setSystemVoice', {'voice': voice});
+  }
+
+  static Future<void> mute() async {
+    await _channel.invokeMethod('mute');
+  }
+
+  static Future<void> unMute() async {
+    await _channel.invokeMethod('unMute');
+  }
 }

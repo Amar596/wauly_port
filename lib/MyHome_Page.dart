@@ -13,6 +13,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int? _hdmiStatus;
+  int? _currentVolume;
+
+  int currentAngle = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Start Screen Capture'),
             ),
+
             // TextButton(
             //   onPressed: () async {
             //     final filePath =
@@ -101,6 +105,85 @@ class _MyHomePageState extends State<MyHomePage> {
             //   },
             //   child: const Text('Start Screen Capture'),
             // ),
+
+            // TextButton(
+            //   onPressed: () async {
+            //     await PortControl.setDisplayOrientation(
+            //       0,90,180,270,
+            //     ); // Try 0, 90, 180, or 270
+            //   },
+            //   child: const Text('Rotate to 180°'),
+            // ),
+
+
+            TextButton(
+              onPressed: () async {
+                const angles = [0, 90, 180, 270];
+                
+
+                currentAngle =
+                    angles[(angles.indexOf(currentAngle) + 1) % angles.length];
+
+                await PortControl.setDisplayOrientation(currentAngle);
+              },
+              child: const Text('Rotate Screen'),
+            ),
+
+            Column(
+              children: [
+                // ... existing widgets ...
+                TextButton(
+                  onPressed: () async {
+                    final volume = await PortControl.getSystemVoice();
+                    setState(() {
+                      _currentVolume = volume;
+                    });
+                  },
+                  child: const Text('Get Volume'),
+                ),
+                if (_currentVolume != null)
+                  Text('Current Volume: $_currentVolume'),
+
+                Slider(
+                  value: (_currentVolume ?? 50).toDouble(),
+                  min: 0,
+                  max: 100,
+                  divisions: 10,
+                  onChanged: (value) async {
+                    await PortControl.setSystemVoice(value.toInt());
+                    setState(() {
+                      _currentVolume = value.toInt();
+                    });
+                  },
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        await PortControl.mute();
+                        setState(() {
+                          _currentVolume = 0;
+                        });
+                      },
+                      child: const Text('Mute'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await PortControl.unMute();
+                        // Refresh volume after unmuting
+                        final volume = await PortControl.getSystemVoice();
+                        setState(() {
+                          _currentVolume = volume;
+                        });
+                      },
+                      child: const Text('Unmute'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ),
