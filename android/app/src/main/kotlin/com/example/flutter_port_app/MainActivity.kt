@@ -9,6 +9,9 @@ import io.flutter.plugin.common.MethodChannel
 import com.mk.service.ifpd.midware.manager.app.imp.AppSystem
 import com.mk.service.ifpd.midware.manager.app.imp.AppSettings
 import com.mk.service.ifpd.app.midware.DisplayOrientation
+import android.os.RemoteException
+// import com.mk.service.ifpd.midware.manager.app.imp.AutoRebootInfo
+// import com.mk.service.ifpd.midware.AutoRebootInfo
 
 
 class MainActivity : FlutterActivity() {
@@ -48,6 +51,24 @@ class MainActivity : FlutterActivity() {
                             val status = appSystem.getHDMIConnectedStatus(index)
                             result.success(status) 
                         }
+
+                        "getHDMIMode" -> {
+                            val mode = appSettings.getHDMIMode()
+                            result.success(mode)
+                        }
+
+                        
+                        "setHdmiMode" -> {
+                                try {
+                                    val status = call.argument<Boolean>("status") ?: false
+                                    appSettings.setHdmiMode(status)
+                                    result.success(true)
+                                } catch (e: RemoteException) {
+                                    result.error("REMOTE_ERROR", "Service communication failed", null)
+                                } catch (e: Exception) {
+                                    result.error("GENERIC_ERROR", e.message, null)
+                                }
+                            }
 
                         "setDelayPowerOn" -> {
                             var mins = call.argument<Int>("mins") ?: 0
@@ -90,10 +111,6 @@ class MainActivity : FlutterActivity() {
                             }
                             appSystem.setDisplayOrientation(orientation)
                         }
-                        // "setDisplayOrientation" -> {
-                        //     val angle = call.argument<Int>("angle") ?: 0
-                        //     appSystem.setDisplayOrientation(DisplayOrientation.ROTATION_180)
-                        // }
 
                         "getSystemVoice" -> {
                                 val volume = appSystem.getSystemVoice()
@@ -119,6 +136,87 @@ class MainActivity : FlutterActivity() {
                                     appSystem.unMute()
                                     result.success("Device unmuted")
                                 }
+
+                                "reboot" -> {
+                                        appSystem.reboot()
+                                        result.success("Reboot command sent")
+                                }
+
+                                // "setSystemAutoReboot" -> {
+                                //     try {
+                                //         val status = call.argument<Int>("status") ?: 0
+                                //         val time = call.argument<String>("time") ?: "00:00"
+                                //         val success = appSystem.setSystemAutoReboot(AutoRebootInfo(status, time))
+                                //         result.success(success)
+                                //     } catch (e: Exception) {
+                                //         result.error("AUTO_REBOOT_ERROR", "Failed to set auto reboot", null)
+                                //     }
+                                // }
+
+                //                 "setSystemAutoReboot" -> {
+                //     try {
+                //         val status = call.argument<Int>("status") ?: 0
+                //         val time = call.argument<String>("time") ?: "00:00"
+                        
+                        
+                //         val possiblePackages = listOf(
+                //             "com.mk.service.ifpd.midware.manager.app.imp.AutoRebootInfo",
+                //             "com.mk.service.ifpd.midware.AutoRebootInfo",
+                //             "com.mk.service.ifpd.AutoRebootInfo"
+                //         )
+                        
+                //         var autoRebootInfo: Any? = null
+                //         var found = false
+                        
+                //         for (pkg in possiblePackages) {
+                //             try {
+                //                 val clazz = Class.forName(pkg)
+                //                 val constructor = clazz.getConstructor(Int::class.java, String::class.java)
+                //                 autoRebootInfo = constructor.newInstance(status, time)
+                //                 found = true
+                //                 break
+                //             } catch (e: ClassNotFoundException) {
+                //                 continue
+                //             }
+                //         }
+                        
+                //         if (!found) {
+                //             result.error(
+                //                 "CLASS_NOT_FOUND", 
+                //                 "AutoRebootInfo class not found in any of: $possiblePackages", 
+                //                 null
+                //             )
+                //             return@setMethodCallHandler
+                //         }
+                        
+                //         // Find and call setSystemAutoReboot method
+                //         val method = appSystem.javaClass.methods.find { 
+                //             it.name == "setSystemAutoReboot" && 
+                //             it.parameterTypes.size == 1
+                //         }
+                        
+                //         if (method == null) {
+                //             result.error(
+                //                 "METHOD_NOT_FOUND", 
+                //                 "setSystemAutoReboot method not found in AppSystem", 
+                //                 null
+                //             )
+                //             return@setMethodCallHandler
+                //         }
+                        
+                //         val success = method.invoke(appSystem, autoRebootInfo) as Boolean
+                //         result.success(success)
+                        
+                //     } catch (e: Exception) {
+                //         Log.e("MainActivity", "Auto reboot error", e)
+                //         result.error(
+                //             "AUTO_REBOOT_ERROR", 
+                //             "Failed to set auto reboot: ${e.javaClass.simpleName}: ${e.message}", 
+                //             null
+                //         )
+                //     }
+                // }
+
 
                         else -> result.notImplemented()
                     }
