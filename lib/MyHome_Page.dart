@@ -18,6 +18,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int currentAngle = 0;
   bool _isLoading = false;
 
+  String? _macAddress;
+  String? _deviceId;
+  String? _serialNumber;
+  String? _clientType;
+  String? _appId;
+
   @override
 Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +74,7 @@ Widget build(BuildContext context) {
               ),
               TextButton(
                 onPressed: () async {
-                  await PortControl.setBackLight(30);
+                  await PortControl.setBackLight(100);
                 },
                 child: const Text('Set Backlight'),
               ),
@@ -247,6 +253,50 @@ Widget build(BuildContext context) {
                   )
                 ],
               ),
+              TextButton(
+                onPressed: () async {
+                  final mac = await PortControl.getMacAddress();
+                  setState(() => _macAddress = mac);
+                },
+                child: const Text('Get MAC Address'),
+              ),
+              if (_macAddress != null) Text('MAC: $_macAddress'),
+
+              TextButton(
+                onPressed: () async {
+                  final id = await PortControl.getDeviceId();
+                  setState(() => _deviceId = id);
+                },
+                child: const Text('Get Device ID'),
+              ),
+              if (_deviceId != null) Text('Device ID: $_deviceId'),
+
+              TextButton(
+                onPressed: () async {
+                  final sn = await PortControl.getSN();
+                  setState(() => _serialNumber = sn);
+                },
+                child: const Text('Get Serial Number'),
+              ),
+              if (_serialNumber != null) Text('SN: $_serialNumber'),
+
+              TextButton(
+                onPressed: () async {
+                  final type = await PortControl.getClientType();
+                  setState(() => _clientType = type);
+                },
+                child: const Text('Get Client Type'),
+              ),
+              if (_clientType != null) Text('Client Type: $_clientType'),
+
+              TextButton(
+                onPressed: () async {
+                  final appId = await PortControl.getAppId();
+                  setState(() => _appId = appId);
+                },
+                child: const Text('Get App ID'),
+              ),
+              if (_appId != null) Text('App ID: $_appId'),
             ],
           ),
         ),

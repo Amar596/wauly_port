@@ -218,6 +218,52 @@ class MainActivity : FlutterActivity() {
                 // }
 
 
+                "getMacAddress" -> {
+                    try {
+                        val macAddress = appSystem.macAddress
+                        result.success(macAddress)
+                    } catch (e: Exception) {
+                        result.error("MAC_ADDRESS_ERROR", "Failed to get MAC address", null)
+                    }
+                }
+
+                "getDeviceId" -> {
+                    try {
+                        val deviceId = appSystem.deviceId
+                        result.success(deviceId)
+                    } catch (e: Exception) {
+                        result.error("DEVICE_ID_ERROR", "Failed to get device ID", null)
+                    }
+                }
+
+                "getSN" -> {
+    try {
+        val sn = appSystem.getSN()
+        result.success(sn)
+    } catch (e: Exception) {
+        result.error("SN_ERROR", "Failed to get serial number: ${e.message}", null)
+    }
+}
+
+                "getClientType" -> {
+                    try {
+                        val clientType = appSystem.clientType
+                        result.success(clientType)
+                    } catch (e: Exception) {
+                        result.error("CLIENT_TYPE_ERROR", "Failed to get client type", null)
+                    }
+                }
+
+                "getAppId" -> {
+                    try {
+                        val appId = appSystem.appId
+                        result.success(appId)
+                    } catch (e: Exception) {
+                        result.error("APP_ID_ERROR", "Failed to get app ID", null)
+                    }
+                }
+
+
                         else -> result.notImplemented()
                     }
         }

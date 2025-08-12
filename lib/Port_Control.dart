@@ -104,4 +104,49 @@ class PortControl {
       return false;
     }
   }
+
+  static Future<String?> getMacAddress() async {
+    try {
+      return await _channel.invokeMethod<String>('getMacAddress');
+    } on PlatformException catch (e) {
+      print('Failed to get MAC address: ${e.message}');
+      return null;
+    }
+  }
+
+  static Future<String?> getDeviceId() async {
+    try {
+      return await _channel.invokeMethod<String>('getDeviceId');
+    } on PlatformException catch (e) {
+      print('Failed to get device ID: ${e.message}');
+      return null;
+    }
+  }
+
+  static Future<String?> getSN() async {
+    try {
+      return await _channel.invokeMethod<String>('getSN');
+    } on PlatformException catch (e) {
+      print('Failed to get serial number: ${e.message}');
+      return null;
+    }
+  }
+
+  static Future<String?> getClientType() async {
+    try {
+      return await _channel.invokeMethod<String>('getClientType');
+    } on PlatformException catch (e) {
+      print('Failed to get client type: ${e.message}');
+      return null;
+    }
+  }
+
+  static Future<String?> getAppId() async {
+    try {
+      return await _channel.invokeMethod<String>('getAppId');
+    } on PlatformException catch (e) {
+      print('Failed to get app ID: ${e.message}');
+      return null;
+    }
+  }
 }
