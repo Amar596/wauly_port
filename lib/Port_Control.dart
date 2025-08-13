@@ -18,7 +18,7 @@ class PortControl {
     return result;
   }
 
-   static Future<bool?> getHdmiMode() async {
+  static Future<bool?> getHdmiMode() async {
     return await _channel.invokeMethod<bool>('getHDMIMode');
   }
 
@@ -123,11 +123,29 @@ class PortControl {
     }
   }
 
+  // static Future<String?> getSN() async {
+  //   try {
+  //     return await _channel.invokeMethod<String>('getSN');
+  //   } on PlatformException catch (e) {
+  //     print('Failed to get serial number: ${e.message}');
+  //     return null;
+  //   }
+  // }
+
   static Future<String?> getSN() async {
     try {
-      return await _channel.invokeMethod<String>('getSN');
+      final sn = await _channel.invokeMethod<String>('getSN');
+      if (sn == null || sn.isEmpty) {
+        print('Received empty serial number');
+        return null;
+      }
+      return sn;
     } on PlatformException catch (e) {
       print('Failed to get serial number: ${e.message}');
+      print('Details: ${e.details}');
+      return null;
+    } catch (e) {
+      print('Unexpected error getting SN: $e');
       return null;
     }
   }

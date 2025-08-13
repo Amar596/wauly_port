@@ -1,3 +1,4 @@
+import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_port_app/Port_Control.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String? _appId;
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -148,6 +149,7 @@ Widget build(BuildContext context) {
                       ),
                     ],
                   ),
+
                   // Updated HDMI Mode Controls
                   // Padding(
                   //   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -206,7 +208,6 @@ Widget build(BuildContext context) {
                   //           },
                   //   child: const Text('Refresh HDMI Mode'),
                   // ),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Column(
@@ -250,7 +251,7 @@ Widget build(BuildContext context) {
                         // ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
               TextButton(
@@ -271,14 +272,44 @@ Widget build(BuildContext context) {
               ),
               if (_deviceId != null) Text('Device ID: $_deviceId'),
 
+              // TextButton(
+              //   onPressed: () async {
+              //     final sn = await PortControl.getSN();
+              //     setState(() => _serialNumber = sn);
+              //   },
+              //   child: const Text('Get Serial Number'),
+              // ),
+              // if (_serialNumber != null) Text('SN: $_serialNumber'),
               TextButton(
                 onPressed: () async {
-                  final sn = await PortControl.getSN();
-                  setState(() => _serialNumber = sn);
+                  try {
+                    final sn = await PortControl.getSN();
+                    if (sn == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to get serial number'),
+                        ),
+                      );
+                    }
+                    setState(() => _serialNumber = sn ?? 'Not available');
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${e.toString()}')),
+                    );
+                  }
                 },
                 child: const Text('Get Serial Number'),
               ),
-              if (_serialNumber != null) Text('SN: $_serialNumber'),
+              if (_serialNumber != null)
+                Text(
+                  'SN: $_serialNumber',
+                  style: TextStyle(
+                    color:
+                        _serialNumber == 'Not available'
+                            ? Colors.red
+                            : Colors.black,
+                  ),
+                ),
 
               TextButton(
                 onPressed: () async {
@@ -297,10 +328,23 @@ Widget build(BuildContext context) {
                 child: const Text('Get App ID'),
               ),
               if (_appId != null) Text('App ID: $_appId'),
+
+              TextButton(
+                onPressed: () async {
+                  // final value = await LaunchApp.isAppInstalled(
+                  //   androidPackageName: "com.example.wauly_app",
+                  // );
+                  await LaunchApp.openApp(
+                    androidPackageName: "com.example.wauly_app",
+                  );
+                  // print(value);
+                },
+                child: const Text('Open Another App'),
+              ),
             ],
           ),
         ),
       ),
     );
-  } 
+  }
 }

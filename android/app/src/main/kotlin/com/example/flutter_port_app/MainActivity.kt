@@ -236,14 +236,31 @@ class MainActivity : FlutterActivity() {
                     }
                 }
 
+                // "getSN" -> {
+                //         try {
+                //             val sn = appSystem.getSN()
+                //             result.success(sn)
+                //         } catch (e: Exception) {
+                //             result.error("SN_ERROR", "Failed to get serial number: ${e.message}", null)
+                //         }
+                //     }
+
                 "getSN" -> {
-    try {
-        val sn = appSystem.getSN()
-        result.success(sn)
-    } catch (e: Exception) {
-        result.error("SN_ERROR", "Failed to get serial number: ${e.message}", null)
-    }
-}
+                    try {
+                        Log.d("MainActivity", "Attempting to get SN...")
+                        val sn = appSystem.getSN()
+                        Log.d("MainActivity", "Got SN: $sn")
+                        if (sn.isNullOrEmpty()) {
+                            Log.w("MainActivity", "Received empty SN")
+                            result.error("EMPTY_SN", "Serial number is empty", null)
+                        } else {
+                            result.success(sn)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Error getting SN", e)
+                        result.error("SN_ERROR", "Failed to get serial number: ${e.message}", e.toString())
+                    }
+                }
 
                 "getClientType" -> {
                     try {
