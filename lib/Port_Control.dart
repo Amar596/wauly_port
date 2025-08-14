@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 class PortControl {
   static const MethodChannel _channel = MethodChannel('port_control');
+  static const int _brightnessStep = 25;
 
   static Future<void> openHdmi(int index) async {
     await _channel.invokeMethod('openHDMI', {'index': index});
@@ -166,5 +167,24 @@ class PortControl {
       print('Failed to get app ID: ${e.message}');
       return null;
     }
+  }
+
+  static Future<void> increaseBrightness() async {
+    final current = await getCurrentBrightness() ?? 0;
+    final newBrightness = (current + _brightnessStep).clamp(0, 100);
+    await setBackLight(newBrightness);
+  }
+
+  static Future<void> decreaseBrightness() async {
+    final current = await getCurrentBrightness() ?? 0;
+    final newBrightness = (current - _brightnessStep).clamp(0, 100);
+    await setBackLight(newBrightness);
+  }
+
+  static Future<int?> getCurrentBrightness() async {
+    // You might need to implement this method in your platform-specific code
+    // if you need to get the current brightness value
+    // For now, we'll just return null and handle it in the UI
+    return null;
   }
 }

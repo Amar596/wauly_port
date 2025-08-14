@@ -10,9 +10,6 @@ import com.mk.service.ifpd.midware.manager.app.imp.AppSystem
 import com.mk.service.ifpd.midware.manager.app.imp.AppSettings
 import com.mk.service.ifpd.app.midware.DisplayOrientation
 import android.os.RemoteException
-// import com.mk.service.ifpd.midware.manager.app.imp.AutoRebootInfo
-// import com.mk.service.ifpd.midware.AutoRebootInfo
-
 
 class MainActivity : FlutterActivity() {
 
@@ -56,8 +53,7 @@ class MainActivity : FlutterActivity() {
                             val mode = appSettings.getHDMIMode()
                             result.success(mode)
                         }
-
-                        
+   
                         "setHdmiMode" -> {
                                 try {
                                     val status = call.argument<Boolean>("status") ?: false
