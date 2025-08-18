@@ -8,10 +8,10 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import com.mk.service.ifpd.midware.manager.app.imp.AppSystem
 import com.mk.service.ifpd.midware.manager.app.imp.AppSettings
+import com.mk.service.ifpd.midware.manager.app.imp.AppSafety
+import com.mk.service.ifpd.app.midware.SafetyType
 import com.mk.service.ifpd.app.midware.DisplayOrientation
 import android.os.RemoteException
-// import com.mk.service.ifpd.midware.manager.app.imp.AutoRebootInfo
-// import com.mk.service.ifpd.midware.AutoRebootInfo
 
 
 class MainActivity : FlutterActivity() {
@@ -19,14 +19,18 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "port_control"
     private lateinit var appSystem: AppSystem
     private lateinit var appSettings: AppSettings
+    private lateinit var appSafety: AppSafety
     
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
         appSystem = AppSystem.getInstance(applicationContext)
-        appSettings = AppSettings.getInstance(applicationContext)   
+        appSettings = AppSettings.getInstance(applicationContext)
+        appSafety = AppSafety.getInstance(applicationContext)  
+
         appSystem.connectService()
         appSettings.connectService()
+        appSafety.connectService()
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -113,173 +117,111 @@ class MainActivity : FlutterActivity() {
                         }
 
                         "getSystemVoice" -> {
-                                val volume = appSystem.getSystemVoice()
-                                result.success(volume)
-                            }
-                            
-                                "setSystemVoice" -> {
-                                    val voice = call.argument<Int>("voice") ?: 50
-                                    if (voice in 0..100) {
-                                        appSystem.setSystemVoice(voice)
-                                        result.success("Volume set to $voice")
-                                    } else {
-                                        result.error("INVALID_VOLUME", "Volume must be 0-100", null)
-                                    }
-                                }
-                                
-                                "mute" -> {
-                                    appSystem.mute()
-                                    result.success("Device muted")
-                                }
-                                
-                                "unMute" -> {
-                                    appSystem.unMute()
-                                    result.success("Device unmuted")
-                                }
-
-                                "reboot" -> {
-                                        appSystem.reboot()
-                                        result.success("Reboot command sent")
-                                }
-
-                                // "setSystemAutoReboot" -> {
-                                //     try {
-                                //         val status = call.argument<Int>("status") ?: 0
-                                //         val time = call.argument<String>("time") ?: "00:00"
-                                //         val success = appSystem.setSystemAutoReboot(AutoRebootInfo(status, time))
-                                //         result.success(success)
-                                //     } catch (e: Exception) {
-                                //         result.error("AUTO_REBOOT_ERROR", "Failed to set auto reboot", null)
-                                //     }
-                                // }
-
-                //                 "setSystemAutoReboot" -> {
-                //     try {
-                //         val status = call.argument<Int>("status") ?: 0
-                //         val time = call.argument<String>("time") ?: "00:00"
-                        
-                        
-                //         val possiblePackages = listOf(
-                //             "com.mk.service.ifpd.midware.manager.app.imp.AutoRebootInfo",
-                //             "com.mk.service.ifpd.midware.AutoRebootInfo",
-                //             "com.mk.service.ifpd.AutoRebootInfo"
-                //         )
-                        
-                //         var autoRebootInfo: Any? = null
-                //         var found = false
-                        
-                //         for (pkg in possiblePackages) {
-                //             try {
-                //                 val clazz = Class.forName(pkg)
-                //                 val constructor = clazz.getConstructor(Int::class.java, String::class.java)
-                //                 autoRebootInfo = constructor.newInstance(status, time)
-                //                 found = true
-                //                 break
-                //             } catch (e: ClassNotFoundException) {
-                //                 continue
-                //             }
-                //         }
-                        
-                //         if (!found) {
-                //             result.error(
-                //                 "CLASS_NOT_FOUND", 
-                //                 "AutoRebootInfo class not found in any of: $possiblePackages", 
-                //                 null
-                //             )
-                //             return@setMethodCallHandler
-                //         }
-                        
-                //         // Find and call setSystemAutoReboot method
-                //         val method = appSystem.javaClass.methods.find { 
-                //             it.name == "setSystemAutoReboot" && 
-                //             it.parameterTypes.size == 1
-                //         }
-                        
-                //         if (method == null) {
-                //             result.error(
-                //                 "METHOD_NOT_FOUND", 
-                //                 "setSystemAutoReboot method not found in AppSystem", 
-                //                 null
-                //             )
-                //             return@setMethodCallHandler
-                //         }
-                        
-                //         val success = method.invoke(appSystem, autoRebootInfo) as Boolean
-                //         result.success(success)
-                        
-                //     } catch (e: Exception) {
-                //         Log.e("MainActivity", "Auto reboot error", e)
-                //         result.error(
-                //             "AUTO_REBOOT_ERROR", 
-                //             "Failed to set auto reboot: ${e.javaClass.simpleName}: ${e.message}", 
-                //             null
-                //         )
-                //     }
-                // }
-
-
-                "getMacAddress" -> {
-                    try {
-                        val macAddress = appSystem.macAddress
-                        result.success(macAddress)
-                    } catch (e: Exception) {
-                        result.error("MAC_ADDRESS_ERROR", "Failed to get MAC address", null)
-                    }
-                }
-
-                "getDeviceId" -> {
-                    try {
-                        val deviceId = appSystem.deviceId
-                        result.success(deviceId)
-                    } catch (e: Exception) {
-                        result.error("DEVICE_ID_ERROR", "Failed to get device ID", null)
-                    }
-                }
-
-                // "getSN" -> {
-                //         try {
-                //             val sn = appSystem.getSN()
-                //             result.success(sn)
-                //         } catch (e: Exception) {
-                //             result.error("SN_ERROR", "Failed to get serial number: ${e.message}", null)
-                //         }
-                //     }
-
-                "getSN" -> {
-                    try {
-                        Log.d("MainActivity", "Attempting to get SN...")
-                        val sn = appSystem.getSN()
-                        Log.d("MainActivity", "Got SN: $sn")
-                        if (sn.isNullOrEmpty()) {
-                            Log.w("MainActivity", "Received empty SN")
-                            result.error("EMPTY_SN", "Serial number is empty", null)
-                        } else {
-                            result.success(sn)
+                            val volume = appSystem.getSystemVoice()
+                            result.success(volume)
                         }
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "Error getting SN", e)
-                        result.error("SN_ERROR", "Failed to get serial number: ${e.message}", e.toString())
-                    }
-                }
+                            
+                        "setSystemVoice" -> {
+                            val voice = call.argument<Int>("voice") ?: 50
+                            if (voice in 0..100) {
+                                appSystem.setSystemVoice(voice)
+                                result.success("Volume set to $voice")
+                            } else {
+                                result.error("INVALID_VOLUME", "Volume must be 0-100", null)
+                            }
+                        }
+                                
+                        "mute" -> {
+                            appSystem.mute()
+                            result.success("Device muted")
+                        }
+                                
+                        "unMute" -> {
+                            appSystem.unMute()
+                            result.success("Device unmuted")
+                        }
 
-                "getClientType" -> {
-                    try {
-                        val clientType = appSystem.clientType
-                        result.success(clientType)
-                    } catch (e: Exception) {
-                        result.error("CLIENT_TYPE_ERROR", "Failed to get client type", null)
-                    }
-                }
+                        "reboot" -> {
+                            appSystem.reboot()
+                            result.success("Reboot command sent")
+                        }
 
-                "getAppId" -> {
-                    try {
-                        val appId = appSystem.appId
-                        result.success(appId)
-                    } catch (e: Exception) {
-                        result.error("APP_ID_ERROR", "Failed to get app ID", null)
-                    }
-                }
+                        "getMacAddress" -> {
+                            try {
+                                val macAddress = appSystem.macAddress
+                                result.success(macAddress)
+                            } catch (e: Exception) {
+                                result.error("MAC_ADDRESS_ERROR", "Failed to get MAC address", null)
+                            }
+                        }
 
+                        "getDeviceId" -> {
+                            try {
+                                val deviceId = appSystem.deviceId
+                                result.success(deviceId)
+                            } catch (e: Exception) {
+                                result.error("DEVICE_ID_ERROR", "Failed to get device ID", null)
+                            }
+                        }
+
+                        "getSN" -> {
+                            try {
+                                Log.d("MainActivity", "Attempting to get SN...")
+                                val sn = appSystem.getSN()
+                                Log.d("MainActivity", "Got SN: $sn")
+                                if (sn.isNullOrEmpty()) {
+                                    Log.w("MainActivity", "Received empty SN")
+                                    result.error("EMPTY_SN", "Serial number is empty", null)
+                                } else {
+                                    result.success(sn)
+                                }
+                            } catch (e: Exception) {
+                                Log.e("MainActivity", "Error getting SN", e)
+                                result.error("SN_ERROR", "Failed to get serial number: ${e.message}", e.toString())
+                            }
+                        }
+
+                        "getClientType" -> {
+                            try {
+                                val clientType = appSystem.clientType
+                                result.success(clientType)
+                            } catch (e: Exception) {
+                                result.error("CLIENT_TYPE_ERROR", "Failed to get client type", null)
+                            }
+                        }
+
+                        "getAppId" -> {
+                            try {
+                                val appId = appSystem.appId
+                                result.success(appId)
+                            } catch (e: Exception) {
+                                result.error("APP_ID_ERROR", "Failed to get app ID", null)
+                            }
+                        }
+
+                        "getHDMI" -> {
+
+                            val lockType = SafetyType.MK_SAFETY_IOC_GET_HDMI_LOCK_TYPE
+                            val value = appSafety.getSafetyLockStatus(lockType)
+                            Log.d("MainActivity", "Attempting to $value")
+                            result.success("HDMI opened for index $value")
+                        }
+
+                        "toggleHDMI" -> {
+                            val status = call.argument<Boolean>("value") ?: true
+                            val lockType = SafetyType.MK_SAFETY_IOC_SET_HDMI_LOCK_TYPE
+                            val value = appSafety.setSafetyLockStatus(lockType,status)
+                            Log.d("MainActivity", "Attempting to $value")
+                            result.success("HDMI opened for index $value")
+                        }
+
+                        "toggleUSB" -> {
+                            val status = call.argument<Boolean>("value") ?: true
+                            val lockType = SafetyType.MK_SAFETY_IOC_SET_USB_LOCK_TYPE
+                            val value = appSafety.setSafetyLockStatus(lockType,status)
+                            Log.d("MainActivity", "Attempting to $value")
+                            result.success("USB opened for index $value")
+                        }
 
                         else -> result.notImplemented()
                     }

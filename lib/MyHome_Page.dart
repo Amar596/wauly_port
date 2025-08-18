@@ -46,8 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
               TextButton(
                 onPressed: () async {
                   await PortControl.openHdmi(1);
-                  await Future.delayed(const Duration(seconds: 10));
-                  await PortControl.closeHdmi();
                 },
                 child: const Text('Open HDMI'),
               ),
@@ -59,14 +57,22 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextButton(
                 onPressed: () async {
-                  final status = await PortControl.getHdmiStatus(1);
-                  setState(() {
-                    _hdmiStatus = status;
-                  });
+                  final status = await PortControl.getHdmiStatus();
                 },
                 child: const Text('Get HDMI Status'),
               ),
-              if (_hdmiStatus != null) Text('HDMI Status: $_hdmiStatus'),
+              TextButton(
+                onPressed: () async {
+                  await PortControl.toggleHDMI(false);
+                },
+                child: const Text('Toggle HDMI Status'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await PortControl.toggleUSB(true);
+                },
+                child: const Text('Toggle USB Status'),
+              ),
               TextButton(
                 onPressed: () async {
                   await PortControl.turnOff();

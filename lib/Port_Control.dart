@@ -11,11 +11,16 @@ class PortControl {
     await _channel.invokeMethod('closeHDMI');
   }
 
-  static Future<int?> getHdmiStatus(int index) async {
-    final result = await _channel.invokeMethod<int>('getHDMIStatus', {
-      'index': index,
-    });
-    return result;
+  static Future<void> getHdmiStatus() async {
+    await _channel.invokeMethod('getHDMI');
+  }
+
+  static Future<void> toggleHDMI(bool value) async {
+    await _channel.invokeMethod('toggleHDMI', {'value': value});
+  }
+
+  static Future<void> toggleUSB(bool value) async {
+    await _channel.invokeMethod('toggleUSB', {'value': value});
   }
 
   static Future<bool?> getHdmiMode() async {
@@ -167,4 +172,5 @@ class PortControl {
       return null;
     }
   }
+
 }
