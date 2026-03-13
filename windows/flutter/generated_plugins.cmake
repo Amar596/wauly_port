@@ -3,7 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< HEAD
   connectivity_plus
+=======
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
   permission_handler_windows
 )
 

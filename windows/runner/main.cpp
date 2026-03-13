@@ -27,7 +27,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
+<<<<<<< HEAD
   if (!window.Create(L"panasonic_port", origin, size)) {
+=======
+  if (!window.Create(L"flutter_port_app", origin, size)) {
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

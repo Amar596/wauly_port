@@ -124,6 +124,17 @@ class PortControl {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // static Future<String?> getSN() async {
+  //   try {
+  //     return await _channel.invokeMethod<String>('getSN');
+  //   } on PlatformException catch (e) {
+  //     print('Failed to get serial number: ${e.message}');
+  //     return null;
+  //   }
+  // }
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
 
   static Future<String?> getSN() async {
     try {

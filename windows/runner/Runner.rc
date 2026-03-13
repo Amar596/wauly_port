@@ -90,12 +90,21 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
+<<<<<<< HEAD
             VALUE "FileDescription", "panasonic_port" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "panasonic_port" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "panasonic_port.exe" "\0"
             VALUE "ProductName", "panasonic_port" "\0"
+=======
+            VALUE "FileDescription", "flutter_port_app" "\0"
+            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "InternalName", "flutter_port_app" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "flutter_port_app.exe" "\0"
+            VALUE "ProductName", "flutter_port_app" "\0"
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

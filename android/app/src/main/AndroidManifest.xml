@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+<<<<<<< HEAD
     
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -8,12 +9,29 @@
     
     <application
         android:label="panasonic_port"
+=======
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.CONTROL_DISPLAY" />
+    <uses-permission android:name="com.mk.service.ifpd.permission.ACCESS_SERVICE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    
+    <application
+        android:label="flutter_port_app"
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
+<<<<<<< HEAD
+=======
+            android:taskAffinity=""
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -31,6 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+<<<<<<< HEAD
 
         <receiver
             android:name=".WaulyReceiver"
@@ -41,6 +60,8 @@
             </intent-filter>
         </receiver>
         
+=======
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
@@ -48,7 +69,11 @@
             android:value="2" />
     </application>
     <!-- Required to query activities that can process text, see:
+<<<<<<< HEAD
          https://developer.android.com/training/package-visibility?hl=en and
+=======
+         https://developer.android.com/training/package-visibility and
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->

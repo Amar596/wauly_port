@@ -1,10 +1,18 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+<<<<<<< HEAD
 project(panasonic_port LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "panasonic_port")
+=======
+project(flutter_port_app LANGUAGES CXX)
+
+# The name of the executable created for the application. Change this to change
+# the on-disk name of your application.
+set(BINARY_NAME "flutter_port_app")
+>>>>>>> e31babe10ded64515602883ca070a223c9a88b79
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
